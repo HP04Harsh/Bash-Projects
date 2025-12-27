@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Function to show the cron jobs
+show_cron_jobs() {
+    echo "Current scheduled tasks:"
+    crontab -l
+}
+
+# Function to add a cron job
+add_cron_job() {
+    # Ask for the task/command to run
+    read -p "Enter the task/command you want to schedule: " task
+
+    # Ask for the time to schedule (in the format: minute hour day month weekday)
+    read -p "Enter the time for scheduling (in the format: minute hour day month weekday): " schedule_time
+
+    # Add the task to cron
+    (crontab -l 2>/dev/null; echo "$schedule_time $task") | crontab -
+
+    echo "Task scheduled successfully."
+}
+
+# Main menu
+echo "Welcome to the Task Scheduler Script"
+PS3="Choose an option: "
+options=("Schedule a new task" "Show scheduled tasks" "Exit")
+
+select opt in "${options[@]}"
+do
+    case $opt in
+        "Schedule a new task")
+            add_cron_job
+            ;;
+        "Show scheduled tasks")
+            show_cron_jobs
+            ;;
+        "Exit")
+            echo "Goodbye!"
+            break
+            ;;
+        *)
+            echo "Invalid option. Please try again."
+            ;;
+    esac
+done
